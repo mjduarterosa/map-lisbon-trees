@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_787d5211baa139a804ae157135cd3958 {
+                #map_25e4d757889f4000d75863c618a6be42 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -57,14 +57,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_787d5211baa139a804ae157135cd3958" ></div>
+            <div class="folium-map" id="map_25e4d757889f4000d75863c618a6be42" ></div>
         
 </body>
 <script>
     
     
-            var map_787d5211baa139a804ae157135cd3958 = L.map(
-                "map_787d5211baa139a804ae157135cd3958",
+            var map_25e4d757889f4000d75863c618a6be42 = L.map(
+                "map_25e4d757889f4000d75863c618a6be42",
                 {
                     center: [38.74337883147274, -9.152059276735592],
                     crs: L.CRS.EPSG3857,
@@ -81,7 +81,7 @@
 
         
     
-            var tile_layer_d1eb7e8fc596746c15fbcd9637b9138d = L.tileLayer(
+            var tile_layer_a1203ae24592dd14f0c6ddf81019edf8 = L.tileLayer(
                 "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
                 {
   "minZoom": 0,
@@ -98,22 +98,29 @@
             );
         
     
-            tile_layer_d1eb7e8fc596746c15fbcd9637b9138d.addTo(map_787d5211baa139a804ae157135cd3958);
+            tile_layer_a1203ae24592dd14f0c6ddf81019edf8.addTo(map_25e4d757889f4000d75863c618a6be42);
         
     
-            var fast_marker_cluster_8f2938dacd1148c8143d29b05c292ed1 = (function(){
+            var fast_marker_cluster_dfd44b4879bbdbb03874aeacd95318dd = (function(){
                 var callback = 
 function (row) {
+
     var icon = L.AwesomeMarkers.icon({
         icon: 'leaf',
         prefix: 'fa',
         markerColor: 'green'
     });
 
-    return L.marker(
-        new L.LatLng(row[0], row[1]),
+    var marker = L.marker(
+        [row[0], row[1]],
         {icon: icon}
     );
+
+    marker.bindPopup(
+        '<b>Species:</b> ' + row[2]
+    );
+
+    return marker;
 }
 ;
 
@@ -127,31 +134,31 @@ function (row) {
                     marker.addTo(cluster);
                 }
 
-                cluster.addTo(map_787d5211baa139a804ae157135cd3958);
+                cluster.addTo(map_25e4d757889f4000d75863c618a6be42);
                 return cluster;
             })();
         
     
-            fast_marker_cluster_8f2938dacd1148c8143d29b05c292ed1.addTo(map_787d5211baa139a804ae157135cd3958);
+            fast_marker_cluster_dfd44b4879bbdbb03874aeacd95318dd.addTo(map_25e4d757889f4000d75863c618a6be42);
         
     
-            var layer_control_354565ccd7de64de28f8e2fe0511c167_layers = {
+            var layer_control_e637aee7ba181514f35ffe759c53394e_layers = {
                 base_layers : {
-                    "cartodbpositron" : tile_layer_d1eb7e8fc596746c15fbcd9637b9138d,
+                    "cartodbpositron" : tile_layer_a1203ae24592dd14f0c6ddf81019edf8,
                 },
                 overlays :  {
-                    "macro_element_8f2938dacd1148c8143d29b05c292ed1" : fast_marker_cluster_8f2938dacd1148c8143d29b05c292ed1,
+                    "macro_element_dfd44b4879bbdbb03874aeacd95318dd" : fast_marker_cluster_dfd44b4879bbdbb03874aeacd95318dd,
                 },
             };
-            let layer_control_354565ccd7de64de28f8e2fe0511c167 = L.control.layers(
-                layer_control_354565ccd7de64de28f8e2fe0511c167_layers.base_layers,
-                layer_control_354565ccd7de64de28f8e2fe0511c167_layers.overlays,
+            let layer_control_e637aee7ba181514f35ffe759c53394e = L.control.layers(
+                layer_control_e637aee7ba181514f35ffe759c53394e_layers.base_layers,
+                layer_control_e637aee7ba181514f35ffe759c53394e_layers.overlays,
                 {
   "position": "topright",
   "collapsed": true,
   "autoZIndex": true,
 }
-            ).addTo(map_787d5211baa139a804ae157135cd3958);
+            ).addTo(map_25e4d757889f4000d75863c618a6be42);
 
         
 </script>

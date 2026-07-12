@@ -19,14 +19,14 @@ counts = df.isna().sum()
 
 # optimize data
 # keep only essential columns
-df_minimal = df[['latitude', 'longitude', 'Nome Vulgar', 'Espécie', 'Local']].copy()
+df_minimal = df[['latitude', 'longitude', 'Nome Vulgar', 'Espécie', 'Local', 'Freguesia']].copy()
 
 # round coordinates to 4 decimals (still city-accurate)
 df_minimal['latitude'] = df_minimal['latitude'].round(4)
 df_minimal['longitude'] = df_minimal['longitude'].round(4)
 
 # create title of app
-st.title("Mapa de Arvores")
+st.title("Mapa de Arvores/ Lisbon Tree Map")
 
 # Create form to wrap the dropdown menus in a box
 with st.form("filter_form"):
@@ -68,7 +68,7 @@ else:
 map_center = [df_filtered["latitude"].mean(), df_filtered["longitude"].mean()]
 m = folium.Map(location=map_center, zoom_start=12, tiles=tile)
 
-coords = df_filtered[["latitude", "longitude", "Espécie", "Nome Vulgar", "Local"]].values.tolist()
+coords = df_filtered[["latitude", "longitude", "Espécie", "Nome Vulgar", "Local", "Freguesia"]].values.tolist()
 
 # change icon to leaf and add species name to popup
 callback = """
@@ -86,7 +86,7 @@ function (row) {
     );
 
     marker.bindPopup(
-    '<b>Espécie:</b> ' + row[2] + '<br><b>Nome Vulgar:</b> ' + row[3] + '<br><b>Local:</b> ' + row[4]
+    '<b>Espécie:</b> ' + row[2] + '<br><b>Nome Vulgar:</b> ' + row[3] + '<br><b>Local:</b> ' + row[4] + '<br><b>Freguesia:</b> ' + row[5]
     );
 
     return marker;

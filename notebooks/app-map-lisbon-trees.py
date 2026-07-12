@@ -28,13 +28,23 @@ df_minimal['longitude'] = df_minimal['longitude'].round(4)
 # create title of app
 st.title("Mapa de Arvores")
 
+tile = st.selectbox(
+    "Basemap",
+    [
+        "CartoDB Voyager",
+        "CartoDB Positron",
+        "OpenStreetMap",
+        "Esri.WorldImagery"
+    ]
+)
+
 # create a map centered on the average coordinates of the trees
 from folium.plugins import FastMarkerCluster
 
 map_center = [df_minimal["latitude"].mean(), df_minimal["longitude"].mean()]
-m = folium.Map(location=map_center, zoom_start=12, tiles="OpenStreetMap")
+m = folium.Map(location=map_center, zoom_start=12, tiles=tile) # "OpenStreetMap"
 
-coords = df_minimal[["latitude", "longitude", "Espécie", "Nome Vulgar"]].values.tolist()
+coords = df_minimal[["latitude", "longitude", "Espécie", "Nome Vulgar", "Local"]].values.tolist()
 
 # change icon to leaf and add species name to popup
 callback = """
@@ -52,7 +62,7 @@ function (row) {
     );
 
     marker.bindPopup(
-    '<b>Espécie:</b> ' + row[2] + '<br><b>Nome Vulgar:</b> ' + row[3]
+    '<b>Espécie:</b> ' + row[2] + '<br><b>Nome Vulgar:</b> ' + row[3] + '<br><b>Local:</b> ' + row[4]
     );
 
     return marker;
@@ -123,22 +133,22 @@ fast_cluster = FastMarkerCluster(
 fast_cluster.add_to(m)
 
 # additional basemaps
-folium.TileLayer(
-    "CartoDB Positron",
-    name="Light Map"
-).add_to(m)
+#folium.TileLayer(
+#    "CartoDB Positron",
+#    name="Light Map"
+#).add_to(m)
 
-folium.TileLayer(
-    "CartoDB Voyager",
-    name="Voyager"
-).add_to(m)
+#folium.TileLayer(
+#    "CartoDB Voyager",
+#    name="Voyager"
+#).add_to(m)
 
-folium.TileLayer(
-    "Esri.WorldImagery",
-    name="Satellite"
-).add_to(m)
+#folium.TileLayer(
+#    "Esri.WorldImagery",
+#    name="Satellite"
+#).add_to(m)
 
-folium.LayerControl().add_to(m)
+#folium.LayerControl(position="topright").add_to(m)
 
 # display map
 html(

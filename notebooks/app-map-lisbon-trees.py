@@ -26,7 +26,7 @@ df_minimal['latitude'] = df_minimal['latitude'].round(4)
 df_minimal['longitude'] = df_minimal['longitude'].round(4)
 
 # create title of app
-st.title("Mapa de Arvores/ Lisbon Tree Map")
+st.title("Árvores de Lisboa / Trees of Lisbon")
 
 # Create form to wrap the dropdown menus in a box
 with st.form("filter_form"):
@@ -35,7 +35,7 @@ with st.form("filter_form"):
 
     with col1:
         tile = st.selectbox(
-            "Basemap",
+            "Mapa / Map",
             [
                 "CartoDB Voyager",
                 "CartoDB Positron",
@@ -46,7 +46,7 @@ with st.form("filter_form"):
 
     # Get unique Local options
     local_options = sorted(df_minimal['Local'].unique().tolist())
-    local_options.insert(0, "All Locations")  # Add "All Locations" as first option
+    local_options.insert(0, "Todos / All")  # Add "All Locations" as first option
 
     with col2:
         selected_local = st.selectbox(
@@ -54,13 +54,13 @@ with st.form("filter_form"):
             local_options
         )
     
-    st.form_submit_button("Apply Filters")
+    st.form_submit_button("Aplicar Filtros / Apply Filters")
 
 # create a map centered on the average coordinates of the trees
 from folium.plugins import FastMarkerCluster
 
 # Filter data based on selected Local
-if selected_local == "All Locations":
+if selected_local == "Todos / All":
     df_filtered = df_minimal
 else:
     df_filtered = df_minimal[df_minimal['Local'] == selected_local]

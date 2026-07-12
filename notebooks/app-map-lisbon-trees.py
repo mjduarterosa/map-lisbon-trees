@@ -44,6 +44,10 @@ with st.form("filter_form"):
             ]
         )
 
+        st.write("")
+        st.write("")
+        st.form_submit_button("Aplicar Filtros / Apply Filters")
+
     # Get unique Local options
     local_options = sorted(df_minimal['Local'].unique().tolist())
     local_options.insert(0, "Todos / All")  # Add "All Locations" as first option
@@ -83,8 +87,6 @@ with st.form("filter_form"):
             "Filter by Ocupação",
             ocupacao_options
         )
-
-    st.form_submit_button("Aplicar Filtros / Apply Filters")
 
 # create a map centered on the average coordinates of the trees
 from folium.plugins import FastMarkerCluster

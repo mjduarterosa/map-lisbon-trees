@@ -28,23 +28,47 @@ df_minimal['longitude'] = df_minimal['longitude'].round(4)
 # create title of app
 st.title("Mapa de Arvores")
 
-tile = st.selectbox(
-    "Basemap",
-    [
-        "CartoDB Voyager",
-        "CartoDB Positron",
-        "OpenStreetMap",
-        "Esri.WorldImagery"
-    ]
-)
+# Create form to wrap the dropdown menus in a box
+with st.form("filter_form"):
+    # Create two columns for the menus
+    col1, col2 = st.columns(2)
+
+    with col1:
+        tile = st.selectbox(
+            "Basemap",
+            [
+                "CartoDB Voyager",
+                "CartoDB Positron",
+                "OpenStreetMap",
+                "Esri.WorldImagery"
+            ]
+        )
+
+    # Get unique Local options
+    local_options = sorted(df_minimal['Local'].unique().tolist())
+    local_options.insert(0, "All Locations")  # Add "All Locations" as first option
+
+    with col2:
+        selected_local = st.selectbox(
+            "Filter by Local",
+            local_options
+        )
+    
+    st.form_submit_button("Apply Filters")
 
 # create a map centered on the average coordinates of the trees
 from folium.plugins import FastMarkerCluster
 
-map_center = [df_minimal["latitude"].mean(), df_minimal["longitude"].mean()]
-m = folium.Map(location=map_center, zoom_start=12, tiles=tile) # "OpenStreetMap"
+# Filter data based on selected Local
+if selected_local == "All Locations":
+    df_filtered = df_minimal
+else:
+    df_filtered = df_minimal[df_minimal['Local'] == selected_local]
 
-coords = df_minimal[["latitude", "longitude", "Espécie", "Nome Vulgar", "Local"]].values.tolist()
+map_center = [df_filtered["latitude"].mean(), df_filtered["longitude"].mean()]
+m = folium.Map(location=map_center, zoom_start=12, tiles=tile)
+
+coords = df_filtered[["latitude", "longitude", "Espécie", "Nome Vulgar", "Local"]].values.tolist()
 
 # change icon to leaf and add species name to popup
 callback = """

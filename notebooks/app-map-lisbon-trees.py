@@ -27,7 +27,7 @@ df_minimal['latitude'] = df_minimal['latitude'].round(4)
 df_minimal['longitude'] = df_minimal['longitude'].round(4)
 
 # create title of app
-st.title("Árvores de Lisboa / Trees of Lisbon")
+st.title("🌳 Árvores de Lisboa 🌳 ")
 # Create form to wrap the dropdown menus in a box
 with st.form("filter_form"):
     # Create three columns for the menus
@@ -35,7 +35,7 @@ with st.form("filter_form"):
 
     with col1:
         tile = st.selectbox(
-            "Mapa / Map",
+            "Tipo de Mapa",
             [
                 "CartoDB Voyager",
                 "CartoDB Positron",
@@ -46,22 +46,22 @@ with st.form("filter_form"):
 
         st.write("")
         st.write("")
-        st.form_submit_button("Aplicar Filtros / Apply Filters")
+        st.form_submit_button("Aplicar Filtros")
 
     # Get unique Local options
     local_options = sorted(df_minimal['Local'].unique().tolist())
-    local_options.insert(0, "Todos / All")  # Add "All Locations" as first option
+    local_options.insert(0, "Todos")  # Add "All Locations" as first option
 
     with col2:
         selected_local = st.selectbox(
-            "Filter by Local",
+            "Filtrar por Local",
             local_options
         )
 
         manutencao_options = sorted(df_minimal['Manutenção'].astype(str).unique().tolist())
-        manutencao_options.insert(0, "Todos / All")
+        manutencao_options.insert(0, "Todos")
         selected_manutencao = st.selectbox(
-            "Filter by Manutenção",
+            "Filtrar por Manutenção",
             manutencao_options
         )
 
@@ -73,18 +73,18 @@ with st.form("filter_form"):
         .value_counts()
         .head(10)
     )
-    common_name_options = ["Todos / All"] + common_name_counts.index.tolist()
+    common_name_options = ["Todos"] + common_name_counts.index.tolist()
 
     with col3:
         selected_common_name = st.selectbox(
-            "Filter by Common Name",
+            "Filtrar por Nome Comum",
             common_name_options
         )
 
         ocupacao_options = sorted(df_minimal['Ocupação'].astype(str).unique().tolist())
-        ocupacao_options.insert(0, "Todos / All")
+        ocupacao_options.insert(0, "Todos")
         selected_ocupacao = st.selectbox(
-            "Filter by Ocupação",
+            "Filtrar por Ocupação",
             ocupacao_options
         )
 
@@ -94,20 +94,20 @@ from folium.plugins import FastMarkerCluster
 # Filter data based on the selected dropdown values
 df_filtered = df_minimal
 
-if selected_local != "Todos / All":
+if selected_local != "Todos":
     df_filtered = df_filtered[df_filtered['Local'] == selected_local]
 
-if selected_common_name != "Todos / All":
+if selected_common_name != "Todos":
     df_filtered = df_filtered[df_filtered['Nome Vulgar'] == selected_common_name]
 
-if selected_manutencao != "Todos / All":
+if selected_manutencao != "Todos":
     df_filtered = df_filtered[df_filtered['Manutenção'] == selected_manutencao]
 
-if selected_ocupacao != "Todos / All":
+if selected_ocupacao != "Todos":
     df_filtered = df_filtered[df_filtered['Ocupação'] == selected_ocupacao]
 
 if df_filtered.empty:
-    st.warning("No trees match the selected filters. Please try a different combination.")
+    st.warning("Zero árvores correspondem aos filtros selecionados. Por favor, selecionar novos filtros.")
     map_center = [38.7223, -9.1393]
     coords = []
 else:
@@ -207,7 +207,7 @@ if coords:
 else:
     folium.Marker(
         location=map_center,
-        popup="No trees match these filters",
+        popup="Zero árvores correspondem aos filtros selecionados. Por favor, selecionar novos filtros.",
         icon=folium.Icon(color="gray")
     ).add_to(m)
 

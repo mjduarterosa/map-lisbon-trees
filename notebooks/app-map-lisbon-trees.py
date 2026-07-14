@@ -3,7 +3,6 @@ import pandas as pd
 import folium
 import streamlit as st
 from streamlit.components.v1 import html
-from streamlit.components.v1 import html
 from pathlib import Path
 
 # configure the Streamlit app layout to be wide

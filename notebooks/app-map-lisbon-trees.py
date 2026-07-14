@@ -67,10 +67,7 @@ with st.form("filter_form"):
     )
     common_name_options = ["Todos"] + common_name_counts.index.tolist()
 
-    # Second row: add a left spacer column and move menus to the right
-    spacer, col2b, col3b, col4b = st.columns([1, 2, 2, 2])
-
-    with col2b:
+    with col2:
         selected_common_name = st.selectbox(
             "🌿 Filtrar por Nome Comum (top 10)",
             common_name_options
@@ -83,7 +80,7 @@ with st.form("filter_form"):
             manutencao_options
         )
 
-    with col3b:
+    with col3:
         selected_freguesia = st.selectbox(
             "🏛️ Filtrar por Freguesia",
             freguesia_options
@@ -96,7 +93,7 @@ with st.form("filter_form"):
             ocupacao_options
         )
 
-    with col4b:
+    with col4:
         selected_local = st.selectbox(
             "🏫 Filtrar por Local",
             local_options

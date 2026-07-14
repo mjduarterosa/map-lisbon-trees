@@ -47,7 +47,7 @@ with st.form("filter_form"):
 
         st.write("")
         st.write("")
-        st.form_submit_button("Aplicar Filtros")
+        st.form_submit_button("Aplicar Filtros", key="apply_filters")
 
     # Get unique Local options
     local_options = sorted(df_minimal['Local'].unique().tolist())
@@ -73,6 +73,12 @@ with st.form("filter_form"):
             common_name_options
         )
 
+    with col3:
+        selected_freguesia = st.selectbox(
+            "🏛️ Filtrar por Freguesia",
+            freguesia_options
+        )
+
         manutencao_options = sorted(df_minimal['Manutenção'].astype(str).unique().tolist())
         manutencao_options.insert(0, "Todos")
         selected_manutencao = st.selectbox(
@@ -80,10 +86,10 @@ with st.form("filter_form"):
             manutencao_options
         )
 
-    with col3:
-        selected_freguesia = st.selectbox(
-            "🏛️ Filtrar por Freguesia",
-            freguesia_options
+    with col4:
+        selected_local = st.selectbox(
+            "🏫 Filtrar por Local",
+            local_options
         )
 
         ocupacao_options = sorted(df_minimal['Ocupação'].astype(str).unique().tolist())
@@ -91,12 +97,6 @@ with st.form("filter_form"):
         selected_ocupacao = st.selectbox(
             "🌱 Filtrar por Ocupação",
             ocupacao_options
-        )
-
-    with col4:
-        selected_local = st.selectbox(
-            "🏫 Filtrar por Local",
-            local_options
         )
 
 st.caption("No mapa, clique no ícone da árvore para mais informações sobre essa árvore (incluindo a espécie).")

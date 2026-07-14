@@ -8,9 +8,17 @@ from pathlib import Path
 # configure the Streamlit app layout to be wide
 st.set_page_config(layout="wide")
 
+@st.cache_data
+def load_data():
+    csv_path = Path(__file__).resolve().parent.parent / "data" / "arvoredo_cleaned.csv"
+    return pd.read_csv(csv_path)
+
+with st.spinner("Loading tree dataset..."):
+    df = load_data()
+
 # load the CSV file into a DataFrame
-csv_path = Path(__file__).resolve().parent.parent / "data" / "arvoredo_cleaned.csv"
-df = pd.read_csv(csv_path)
+#csv_path = Path(__file__).resolve().parent.parent / "data" / "arvoredo_cleaned.csv"
+#df = pd.read_csv(csv_path)
 df.head()
 
 df = df.fillna("Nao id.")

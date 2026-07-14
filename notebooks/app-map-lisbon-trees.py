@@ -3,11 +3,13 @@ import pandas as pd
 import folium
 import streamlit as st
 from streamlit.components.v1 import html
+from folium.plugins import FastMarkerCluster
 from pathlib import Path
 
 # configure the Streamlit app layout to be wide
 st.set_page_config(layout="wide")
 
+# load data from CSV file and cache it to avoid reloading on every interaction
 @st.cache_data
 def load_data():
     csv_path = Path(__file__).resolve().parent.parent / "data" / "arvoredo_cleaned.csv"
@@ -16,18 +18,14 @@ def load_data():
 with st.spinner("Loading tree dataset..."):
     df = load_data()
 
-# load the CSV file into a DataFrame
-#csv_path = Path(__file__).resolve().parent.parent / "data" / "arvoredo_cleaned.csv"
-#df = pd.read_csv(csv_path)
-df.head()
-
 df = df.fillna("Nao id.")
-counts = df.isna().sum()
 
 # optimize data
 # keep only essential columns
-df_minimal = df[['latitude', 'longitude', 
-                 'Nome Vulgar', 'Espécie', 'Local', 'Freguesia', 'Morada', 'Manutenção', 'Ocupação', 'Tipologia']].copy()
+df_minimal = df
+#df_minimal = df[['latitude', 'longitude', 
+#                 'Nome Vulgar', 'Espécie', 'Local', 'Freguesia', 
+#                 'Morada', 'Manutenção', 'Ocupação', 'Tipologia']].copy()
 
 # round coordinates to 4 decimals (still city-accurate)
 df_minimal['latitude'] = df_minimal['latitude'].round(4)
@@ -36,9 +34,10 @@ df_minimal['longitude'] = df_minimal['longitude'].round(4)
 # create title of app
 st.title("🌳 Árvores de Lisboa 🌳 ")
 st.markdown("Dados: Avoredo, Câmara Municipal de Lisboa: [Arvoredo - Portal Dados Abertos](https://dadosabertos.cm-lisboa.pt/fr/dataset/arvoredo)")
-# Create form to wrap the dropdown menus in a box
+
+# create form to wrap the dropdown menus in a box
 with st.form("filter_form"):
-    # Create four columns for the menus
+    # create four columns for the menus
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
@@ -56,15 +55,15 @@ with st.form("filter_form"):
         st.write("")
         st.form_submit_button("Aplicar Filtros", key="apply_filters")
 
-    # Get unique Local options
+    # get unique Local options
     local_options = sorted(df_minimal['Local'].unique().tolist())
     local_options.insert(0, "Todos")  # Add "All Locations" as first option
 
-    # Get unique Freguesia options
+    # get unique Freguesia options
     freguesia_options = sorted(df_minimal['Freguesia'].astype(str).unique().tolist())
     freguesia_options.insert(0, "Todos")
 
-    # Get top 10 most common common names, excluding missing values
+    # get top 10 most common common names, excluding missing values
     common_name_counts = (
         df_minimal['Nome Vulgar']
         .replace("Nao id.", pd.NA)
@@ -106,12 +105,10 @@ with st.form("filter_form"):
             ocupacao_options
         )
 
+# add more info text
 st.caption("No mapa, clique no ícone da árvore para mais informações sobre essa árvore (incluindo a espécie).")
 
-# create a map centered on the average coordinates of the trees
-from folium.plugins import FastMarkerCluster
-
-# Filter data based on the selected dropdown values
+# filter data based on the selected dropdown values
 df_filtered = df_minimal
 
 if selected_local != "Todos":
@@ -216,7 +213,6 @@ css = """
 # add the CSS to the map
 m.get_root().html.add_child(folium.Element(css))
 
-
 # create cluster map
 if coords:
     fast_cluster = FastMarkerCluster(
@@ -234,24 +230,6 @@ else:
         popup="Zero árvores encontradas. Por favor, selecionar novos filtros.",
         icon=folium.Icon(color="gray")
     ).add_to(m)
-
-# additional basemaps
-#folium.TileLayer(
-#    "CartoDB Positron",
-#    name="Light Map"
-#).add_to(m)
-
-#folium.TileLayer(
-#    "CartoDB Voyager",
-#    name="Voyager"
-#).add_to(m)
-
-#folium.TileLayer(
-#    "Esri.WorldImagery",
-#    name="Satellite"
-#).add_to(m)
-
-#folium.LayerControl(position="topright").add_to(m)
 
 # display map
 html(

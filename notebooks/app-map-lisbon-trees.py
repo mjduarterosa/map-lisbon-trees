@@ -20,12 +20,8 @@ with st.spinner("Loading tree dataset..."):
 
 df = df.fillna("Nao id.")
 
-# optimize data
-# keep only essential columns
+# optimize data (if needed)
 df_minimal = df
-#df_minimal = df[['latitude', 'longitude', 
-#                 'Nome Vulgar', 'Espécie', 'Local', 'Freguesia', 
-#                 'Morada', 'Manutenção', 'Ocupação', 'Tipologia']].copy()
 
 # round coordinates to 4 decimals (still city-accurate)
 df_minimal['latitude'] = df_minimal['latitude'].round(4)

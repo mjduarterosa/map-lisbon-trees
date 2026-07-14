@@ -18,6 +18,7 @@ def load_data():
 with st.spinner("Loading tree dataset..."):
     df = load_data()
 
+# replace NaNs
 df = df.fillna("Nao id.")
 
 # optimize data (if needed)

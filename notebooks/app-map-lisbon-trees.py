@@ -20,7 +20,7 @@ counts = df.isna().sum()
 # optimize data
 # keep only essential columns
 df_minimal = df[['latitude', 'longitude', 
-                 'Nome Vulgar', 'Espécie', 'Local', 'Freguesia', 'Morada', 'Manutenção', 'Ocupação']].copy()
+                 'Nome Vulgar', 'Espécie', 'Local', 'Freguesia', 'Morada', 'Manutenção', 'Ocupação', 'Tipologia']].copy()
 
 # round coordinates to 4 decimals (still city-accurate)
 df_minimal['latitude'] = df_minimal['latitude'].round(4)
@@ -28,11 +28,11 @@ df_minimal['longitude'] = df_minimal['longitude'].round(4)
 
 # create title of app
 st.title("🌳 Árvores de Lisboa 🌳 ")
-st.markdown("Dados: Avoredo, Câmara Municipal de Lisboa, origem: [Arvoredo - Portal Dados Abertos](https://dadosabertos.cm-lisboa.pt/fr/dataset/arvoredo)")
+st.markdown("Dados: Avoredo, Câmara Municipal de Lisboa: [Arvoredo - Portal Dados Abertos](https://dadosabertos.cm-lisboa.pt/fr/dataset/arvoredo)")
 # Create form to wrap the dropdown menus in a box
 with st.form("filter_form"):
-    # Create three columns for the menus
-    col1, col2, col3 = st.columns(3)
+    # Create four columns for the menus
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         tile = st.selectbox(
@@ -53,18 +53,9 @@ with st.form("filter_form"):
     local_options = sorted(df_minimal['Local'].unique().tolist())
     local_options.insert(0, "Todos")  # Add "All Locations" as first option
 
-    with col2:
-        selected_local = st.selectbox(
-            "🏫 Filtrar por Local",
-            local_options
-        )
-
-        manutencao_options = sorted(df_minimal['Manutenção'].astype(str).unique().tolist())
-        manutencao_options.insert(0, "Todos")
-        selected_manutencao = st.selectbox(
-            "🔧 Filtrar por Manutenção",
-            manutencao_options
-        )
+    # Get unique Freguesia options
+    freguesia_options = sorted(df_minimal['Freguesia'].astype(str).unique().tolist())
+    freguesia_options.insert(0, "Todos")
 
     # Get top 10 most common common names, excluding missing values
     common_name_counts = (
@@ -76,10 +67,26 @@ with st.form("filter_form"):
     )
     common_name_options = ["Todos"] + common_name_counts.index.tolist()
 
-    with col3:
+    # Second row: add a left spacer column and move menus to the right
+    spacer, col2b, col3b, col4b = st.columns([1, 2, 2, 2])
+
+    with col2b:
         selected_common_name = st.selectbox(
             "🌿 Filtrar por Nome Comum (top 10)",
             common_name_options
+        )
+
+        manutencao_options = sorted(df_minimal['Manutenção'].astype(str).unique().tolist())
+        manutencao_options.insert(0, "Todos")
+        selected_manutencao = st.selectbox(
+            "🔧 Filtrar por Manutenção",
+            manutencao_options
+        )
+
+    with col3b:
+        selected_freguesia = st.selectbox(
+            "🏛️ Filtrar por Freguesia",
+            freguesia_options
         )
 
         ocupacao_options = sorted(df_minimal['Ocupação'].astype(str).unique().tolist())
@@ -89,7 +96,13 @@ with st.form("filter_form"):
             ocupacao_options
         )
 
-st.caption("No mapa, clique no ícone da árvore para mais informações sobre essa árvore.")
+    with col4b:
+        selected_local = st.selectbox(
+            "🏫 Filtrar por Local",
+            local_options
+        )
+
+st.caption("No mapa, clique no ícone da árvore para mais informações sobre essa árvore (incluindo a espécie).")
 
 # create a map centered on the average coordinates of the trees
 from folium.plugins import FastMarkerCluster
@@ -109,13 +122,17 @@ if selected_manutencao != "Todos":
 if selected_ocupacao != "Todos":
     df_filtered = df_filtered[df_filtered['Ocupação'] == selected_ocupacao]
 
+if selected_freguesia != "Todos":
+    df_filtered = df_filtered[df_filtered['Freguesia'] == selected_freguesia]
+
 if df_filtered.empty:
-    st.warning("Zero árvores correspondem aos filtros selecionados. Por favor, selecionar novos filtros.")
+    st.warning("Zero árvores encontradas. Por favor, selecionar novos filtros.")
     map_center = [38.7223, -9.1393]
     coords = []
 else:
     map_center = [df_filtered["latitude"].mean(), df_filtered["longitude"].mean()]
-    coords = df_filtered[["latitude", "longitude", "Espécie", "Nome Vulgar", "Local", "Freguesia", "Morada", "Manutenção", "Ocupação"]].values.tolist()
+    coords = df_filtered[["latitude", "longitude", "Espécie", "Nome Vulgar", "Local", 
+                          "Freguesia", "Morada", "Manutenção", "Ocupação", "Tipologia"]].values.tolist()
 
 m = folium.Map(location=map_center, zoom_start=12, tiles=tile)
 
@@ -137,7 +154,7 @@ function (row) {
     marker.bindPopup(
     '<b>Espécie:</b> ' + row[2] + '<br><b>Nome Vulgar:</b> ' + row[3] + '<br><b>Local:</b> ' 
     + row[4] + '<br><b>Freguesia:</b> ' + row[5] + '<br><b>Morada:</b> ' + row[6] 
-    + '<br><b>Manutenção:</b> ' + row[7] + '<br><b>Ocupação:</b> ' + row[8]
+    + '<br><b>Manutenção:</b> ' + row[7] + '<br><b>Ocupação:</b> ' + row[8] + '<br><b>Tipologia:</b> ' + row[9]
     );
 
     return marker;
@@ -210,7 +227,7 @@ if coords:
 else:
     folium.Marker(
         location=map_center,
-        popup="Zero árvores correspondem aos filtros selecionados. Por favor, selecionar novos filtros.",
+        popup="Zero árvores encontradas. Por favor, selecionar novos filtros.",
         icon=folium.Icon(color="gray")
     ).add_to(m)
 

@@ -14,7 +14,7 @@ csv_path = Path(__file__).resolve().parent.parent / "data" / "arvoredo_cleaned.c
 df = pd.read_csv(csv_path)
 df.head()
 
-df = df.fillna("Nao indentificada")
+df = df.fillna("Nao id.")
 counts = df.isna().sum()
 
 # optimize data
@@ -35,7 +35,7 @@ with st.form("filter_form"):
 
     with col1:
         tile = st.selectbox(
-            "Tipo de Mapa",
+            "🗺️ Tipo de Mapa",
             [
                 "CartoDB Voyager",
                 "CartoDB Positron",
@@ -54,21 +54,21 @@ with st.form("filter_form"):
 
     with col2:
         selected_local = st.selectbox(
-            "Filtrar por Local",
+            "🏫 Filtrar por Local",
             local_options
         )
 
         manutencao_options = sorted(df_minimal['Manutenção'].astype(str).unique().tolist())
         manutencao_options.insert(0, "Todos")
         selected_manutencao = st.selectbox(
-            "Filtrar por Manutenção",
+            "🔧 Filtrar por Manutenção",
             manutencao_options
         )
 
     # Get top 10 most common common names, excluding missing values
     common_name_counts = (
         df_minimal['Nome Vulgar']
-        .replace("Nao indentificada", pd.NA)
+        .replace("Nao id.", pd.NA)
         .dropna()
         .value_counts()
         .head(10)
@@ -77,16 +77,18 @@ with st.form("filter_form"):
 
     with col3:
         selected_common_name = st.selectbox(
-            "Filtrar por Nome Comum",
+            "🌿 Filtrar por Nome Comum (top 10)",
             common_name_options
         )
 
         ocupacao_options = sorted(df_minimal['Ocupação'].astype(str).unique().tolist())
         ocupacao_options.insert(0, "Todos")
         selected_ocupacao = st.selectbox(
-            "Filtrar por Ocupação",
+            "🌱 Filtrar por Ocupação",
             ocupacao_options
         )
+
+st.caption("No mapa, clique no ícone da árvore para mais informações sobre essa árvore.")
 
 # create a map centered on the average coordinates of the trees
 from folium.plugins import FastMarkerCluster

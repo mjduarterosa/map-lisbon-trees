@@ -30,7 +30,8 @@ df_minimal['longitude'] = df_minimal['longitude'].round(4)
 
 # create title of app
 st.title("🌳 Árvores de Lisboa 🌳 ")
-st.markdown("Dados: Avoredo, Câmara Municipal de Lisboa: [Arvoredo - Portal Dados Abertos](https://dadosabertos.cm-lisboa.pt/fr/dataset/arvoredo)")
+st.subheader("Aplicação para visualização do inventário das árvores em espaços públicos da cidade de Lisboa.")
+st.markdown("Fonte: Avoredo, Câmara Municipal de Lisboa: [Arvoredo - Portal Dados Abertos](https://dadosabertos.cm-lisboa.pt/fr/dataset/arvoredo) (5 May 2026, 10:53 (UTC+01:00))")
 
 # create form to wrap the dropdown menus in a box
 with st.form("filter_form"):
@@ -66,13 +67,13 @@ with st.form("filter_form"):
         .replace("Nao id.", pd.NA)
         .dropna()
         .value_counts()
-        .head(10)
+        .head(50)
     )
     common_name_options = ["Todos"] + common_name_counts.index.tolist()
 
     with col2:
         selected_common_name = st.selectbox(
-            "🌿 Filtrar por Nome Comum (top 10)",
+            "🌿 Filtrar por Nome Comum (top 50)",
             common_name_options
         )
 
@@ -235,3 +236,7 @@ html(
     height=800,
     scrolling=False,
 )
+
+# add contact information
+st.divider()
+st.caption("Contacto: M. J. Duarte Rosa | 📧 mdr.datascience AT gmail")

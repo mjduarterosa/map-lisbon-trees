@@ -31,7 +31,7 @@ df_minimal['longitude'] = df_minimal['longitude'].round(4)
 # create title of app
 st.title("🌳 Árvores de Lisboa 🌳 ")
 st.subheader("Aplicação para visualização do inventário das árvores em espaços públicos da cidade de Lisboa.")
-st.markdown("Fonte: Avoredo, Câmara Municipal de Lisboa: [Arvoredo - Portal Dados Abertos](https://dadosabertos.cm-lisboa.pt/fr/dataset/arvoredo) (5 May 2026, 10:53 (UTC+01:00))")
+st.markdown("Fonte: Avoredo, Câmara Municipal de Lisboa: [Arvoredo - Portal Dados Abertos](https://dadosabertos.cm-lisboa.pt/fr/dataset/arvoredo) (5 May 2026, 10:53 (UTC+01:00)).")
 
 # create form to wrap the dropdown menus in a box
 with st.form("filter_form"):
